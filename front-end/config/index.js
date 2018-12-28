@@ -3,6 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
+const SERVER_ADDR = process.env.SERVER_ADDR
 
 module.exports = {
   dev: {
@@ -10,7 +11,12 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+        '/api/': {
+            target: SERVER_ADDR || 'http://localhost:3000',
+            changeOrigin: true
+         }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
