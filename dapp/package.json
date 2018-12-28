@@ -1,0 +1,28 @@
+{
+  "name": "web3-express-dapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "lint": "eslint --ext .js lib connection"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "http-errors": "^1.7.1",
+    "morgan": "^1.9.1",
+    "path": "^0.12.7",
+    "truffle-contract": "^4.0.0",
+    "web3": "^1.0.0-beta.37"
+  },
+  "devDependencies": {
+    "eslint": "^5.11.0"
+  }
+}
