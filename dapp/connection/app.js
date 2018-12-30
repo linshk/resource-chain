@@ -7,6 +7,45 @@ var ResourceManager = contract(manager_artifact)
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
+module.exports.ResourceManager = {
+  getInstance: async function(address) {
+    var self = this;
+
+    ResourceManager.setProvider(web3.currentProvider);
+    return ResourceManager.at(address).then((instance) => {
+      return instance;
+    }).catch((err) => {
+      console.log(err);
+      throw err;
+    })
+  },
+  getDeployedInstance: async function() {
+    var self = this;
+
+    ResourceManager.setProvider(web3.currentProvider);
+    return ResourceManager.deployed().then((instance) => {
+      return instance;
+    }).catch((err) => {
+      console.log(err);
+      throw err;
+    })
+  },
+  newResourceManager: async function(sender) {
+    var self = this;
+
+    // Bootstrap the Agent abstraction for Use.
+    ResourceManager.setProvider(web3.currentProvider);
+    // var agent;
+    return ResourceManager.new({from: sender}).then(function(instance) {
+      return instance;
+    })
+    .catch((err) => {
+      console.log(err);
+      throw err;
+    });
+  }
+}
+
 module.exports.Agent = {
   getInstance: async function(address) {
     var self = this;

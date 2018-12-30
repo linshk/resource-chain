@@ -1,4 +1,8 @@
 const truffleConnection = require('../connection/app.js');
+const utils = require('../lib/utils')
+const port = process.env.PORT || 3000;
+const web3 = require('web3');
+const BigNumber = web3.utils.BN;
 
 exports.newAgent = async (req, res) => {
   // logger.info('POST newAgent');
@@ -159,33 +163,239 @@ exports.checkStatus = async (req, res) => {
 };
 
 exports.initResourceState = async (req, res) => {
+  let sender = req.body.sender;
+  let address = req.body.address;
 
+  let name = req.body.name;
+  let description = req.body.description;
+  let tags = req.body.tags;
+  let price = req.body.price;
+
+  let hash = '0x13213hasjkdas';
+
+  await truffleConnection.Agent.getInstance(address)
+  .then((instance) => {
+    return instance.initResourceState(hash, price, {from: sender})
+  })
+  .then((status) => {
+    res.json({
+      status: true,
+      msg: '',
+      data: {
+        status: status
+      }
+    })
+  })
+  .catch((err) => {
+    res.json({
+      status: false,
+      msg: err.message,
+      data: null
+    })
+  });
 };
 
 exports.setPrice =  async (req, res) => {
+  let sender = req.body.sender;
+  let address = req.body.address;
+
+  let hash = req.body.hash;
+  let price = req.body.price;
+
+  await truffleConnection.Agent.getInstance(address)
+  .then((instance) => {
+    return instance.setPrice(hash, price, {from: sender})
+  })
+  .then((status) => {
+    res.json({
+      status: true,
+      msg: '',
+      data: {
+        status: status
+      }
+    })
+  })
+  .catch((err) => {
+    res.json({
+      status: false,
+      msg: err.message,
+      data: null
+    })
+  });
+
 
 };
 
 exports.setAvailable = async (req, res) => {
+  let sender = req.body.sender;
+  let address = req.body.address;
 
+  let hash = req.body.hash;
+  let available = req.body.available;
+
+  await truffleConnection.Agent.getInstance(address)
+  .then((instance) => {
+    return instance.setAvailable(hash, price, {from: sender})
+  })
+  .then((status) => {
+    res.json({
+      status: true,
+      msg: '',
+      data: {
+        status: status
+      }
+    })
+  })
+  .catch((err) => {
+    res.json({
+      status: false,
+      msg: err.message,
+      data: null
+    })
+  });
 };
 
 exports.getResourceState = async (req, res) => {
+  let sender = req.query.sender;
+  let address = req.query.address;
 
+  let hash = req.body.hash;
+
+  await truffleConnection.Agent.getInstance(address)
+  .then((instance) => {
+    return instance.getResourceState.call(hash, {from: sender})
+  })
+  .then((resourceState) => {
+    res.json({
+      status: true,
+      msg: '',
+      data: {
+        state: resourceState
+      }
+    })
+  })
+  .catch((err) => {
+    res.json({
+      status: false,
+      msg: err.message,
+      data: null
+    })
+  });
 };
 
 exports.requestResource = async (req, res) => {
+  let sender = req.body.sender;
+  let address = req.body.address;
+
+  let hash = req.body.hash;
+  // let host = req.ip.match(/\d+\.\d+\.\d+\.\d+/);
+  let host = utils.getIPAddress();
+
+  console.log('host:', host, 'port:', port);
+
+  await truffleConnection.Agent.getInstance(address)
+  .then((instance) => {
+    return instance.requestResource(hash, String(host), port, {from: sender})
+  })
+  .then(() => {
+    res.json({
+      status: true,
+      msg: '',
+      data: {}
+    })
+  })
+  .catch((err) => {
+    res.json({
+      status: false,
+      msg: err.message,
+      data: null
+    })
+  });
 
 };
 
 exports.getRequest = async (req, res) => {
+  let sender = req.query.sender;
+  let address = req.query.address;
 
+  let id = req.query.id;
+
+  await truffleConnection.Agent.getInstance(address)
+  .then((instance) => {
+    return instance.getRequest.call(id, {from: sender})
+  })
+  .then((request) => {
+    res.json({
+      status: true,
+      msg: '',
+      data: {
+        request: request
+      }
+    })
+  })
+  .catch((err) => {
+    res.json({
+      status: false,
+      msg: err.message,
+      data: null
+    })
+  })
 };
 
 exports.responseResource = async (req, res) => {
+  let sender = req.body.sender;
+  let address = req.body.address;
 
+  let id = req.body.id;
+  let success = true;
+  let url = 'http://192.168.186.181';
+  let token = 'sas87d82hd89ashda';
+
+  await truffleConnection.Agent.getInstance(address)
+  .then((instance) => {
+    return instance.responseResource(id, success, url, token, {from: sender})
+  })
+  .then(() => {
+    res.json({
+      status: true,
+      msg: '',
+      data: {}
+    })
+  })
+  .catch((err) => {
+    res.json({
+      status: false,
+      msg: err.message,
+      data: null
+    })
+  });
 };
 
 exports.fetchResponse = async (req, res) => {
+  let sender = req.body.sender;
+  let address = req.body.address;
 
+  let token = req.body.token;
+  let id = req.body.id;
+
+  await truffleConnection.Agent.getInstance(address)
+  .then((instance) => {
+    return instance.fetchResponse(id, {from: sender})
+  })
+  .then((response) => {
+    res.json({
+      status: true,
+      msg: '',
+      data: {
+        response: response
+      }
+    })
+  })
+  .catch((err) => {
+    res.json({
+      status: false,
+      msg: err.message,
+      data: null
+    })
+  });
 };

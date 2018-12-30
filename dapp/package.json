@@ -8,16 +8,19 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "node ./bin/www",
     "lint": "eslint --ext .js lib connection"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bignumber": "^1.1.0",
     "body-parser": "^1.18.3",
+    "debug": "^4.1.1",
     "express": "^4.16.4",
     "http-errors": "^1.7.1",
     "morgan": "^1.9.1",
+    "multer": "^1.4.1",
     "path": "^0.12.7",
     "truffle-contract": "^4.0.0",
     "web3": "^1.0.0-beta.37"
