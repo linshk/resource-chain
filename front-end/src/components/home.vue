@@ -4,7 +4,7 @@
       <el-tab-pane label="资源中心" name="" style="justify-content: center;">
         <resource-center></resource-center>
       </el-tab-pane>
-      <el-tab-pane label="我的资源" name="" style="justify-content: center;">
+      <el-tab-pane label="上传资源" name="" style="justify-content: center;">
         <upload-resource></upload-resource>
       </el-tab-pane>
       <el-tab-pane label="下载列表" name="" style="justify-content: center;">下载列表</el-tab-pane>
