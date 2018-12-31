@@ -23,6 +23,7 @@ contract Agent {
     
     // state of resource
     struct ResourceState {
+        uint id;
         string hash;
         uint price;
         uint count;
@@ -45,15 +46,40 @@ contract Agent {
     // total count of requests to resources
     uint public requestsCount;
     
+    function getRequestsCount() public view returns (uint count)
+    {
+        return requestsCount;
+    }
+
     // total count of owned resources
     uint public resourcesCount;
+
+    function getResourcesCount() public view returns (uint count)
+    {
+        return resourcesCount;
+    }
     
     // timestamp of last valid pulse 
     uint lastPulseTimestamp;
     
+    function getLastPulseTimestamp() public view returns (uint timestamp)
+    {
+        return lastPulseTimestamp;
+    }
+
     // max duration between two valid pulse
     uint timeout;
     
+    function getTimeout() public view returns (uint curTimeout)
+    {
+        return timeout;
+    }
+
+    function setTimeout(uint val) public onlyOwner
+    {
+        timeout = val;
+    }
+
     // status of owner's client (online/offline)
     bool isOnline;
     
@@ -150,7 +176,7 @@ contract Agent {
         if (states[hash].lastModified != 0) {
             return false;
         }
-        states[hash] = ResourceState(hash, price, 0, true, block.timestamp);
+        states[hash] = ResourceState(resourcesCount, hash, price, 0, true, block.timestamp);
         hashes[resourcesCount] = hash;
         resourcesCount++;
         return true;
@@ -179,14 +205,23 @@ contract Agent {
     } 
     
     // get state of a resource by resource hash
-    function getResourceState(string resourceHash) public view returns(uint price, uint count, bool available, uint timestamp) {
+    function getResourceState(string resourceHash) public view returns(uint id, uint price, uint count, bool available, uint lastModified) {
         // state does not exist
         if (states[resourceHash].lastModified == 0) {
-            return (0, 0, false, 0);
+            return (0, 0, 0, false, 0);
         }
-        return (states[resourceHash].price, states[resourceHash].count, states[resourceHash].available, states[resourceHash].lastModified);
+        return (states[resourceHash].id, states[resourceHash].price, states[resourceHash].count, states[resourceHash].available, states[resourceHash].lastModified);
     }
     
+    // get state of a resource by resource id
+    function getResourceStateById(uint id) public view returns(string hash, uint price, uint count, bool available, uint lastModified) {
+        require(id < resourcesCount, "id out of range");
+        hash = hashes[id];
+        if (states[hash].lastModified == 0) {
+            return ("", 0, 0, false, 0);
+        }
+        return (hash, states[hash].price, states[hash].count, states[hash].available, states[hash].lastModified);
+    }
     
     // send a request to download the resource from owner's local storage, and wait for response
     function requestResource(string resourceHash, string host, uint port) public
@@ -230,7 +265,7 @@ contract Agent {
             return (false, "", "", 0);
         }
         
-        string storage hash = requests[id].resourceHash;
+        string memory hash = requests[id].resourceHash;
         require(msg.value >= states[hash].price, "you should pay at least the price of the resource");
         owner.transfer(msg.value);
         

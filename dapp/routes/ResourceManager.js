@@ -16,9 +16,11 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 router
   .post('/newResourceManager', manager.newResourceManager)
+  .get('/getDeployedManager', manager.getDeployedManager)
   .post('/uploadResourceInfo', upload.single('resource'), manager.uploadResourceInfo)
   .get('/getResourceInfoByHash', manager.getResourceInfoByHash)
   .get('/getResourceInfoById', manager.getResourceInfoById)
-  .post('/registerAgent', manager.registerAgent);
+  .post('/registerAgent', manager.registerAgent)
+  .get('/getResourcesCount', manager.getResourcesCount);
 
 module.exports = router

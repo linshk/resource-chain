@@ -28,6 +28,27 @@ exports.newResourceManager = async (req, res) => {
   
 };
 
+exports.getDeployedManager = async (req, res) => {
+  await truffleConnection.ResourceManager.getDeployedInstance()
+  .then((tx) => {
+    res.json({
+      status: true,
+      msg: '',
+      data: {
+        address: tx.address,
+        txhash: tx.transactionHash
+      }
+    });
+  })
+  .catch((err) => {
+    res.json({
+      status: false,
+      msg: err.message,
+      data: null
+    })
+  });
+};
+
 exports.uploadResourceInfo = async (req, res) => {
 	let sender = req.body.sender;
 	let address = req.body.address;
@@ -134,7 +155,7 @@ exports.registerAgent = async (req, res) => {
 
   let agent = req.body.agent;
 
-  await truffleConnection.Agent.getInstance(address)
+  await truffleConnection.ResourceManager.getInstance(address)
   .then((instance) => {
     return instance.registerAgent(agent, {from: sender})
   })
@@ -144,6 +165,34 @@ exports.registerAgent = async (req, res) => {
       msg: '',
       data: {
         status: status
+      }
+    })
+  })
+  .catch((err) => {
+    res.json({
+      status: false,
+      msg: err.message,
+      data: null
+    })
+  });
+};
+
+exports.getResourcesCount = async (req, res) => {
+  let sender = req.query.sender;
+  let address = req.query.address;
+  console.log('body', req.body)
+  console.log('query', req.query)
+  await truffleConnection.ResourceManager.getInstance(address)
+  .then((instance) => {
+    console.log('count is', instance.resourcesCount)
+    return instance.getResourcesCount.call({from: sender})
+  })
+  .then((total) => {
+    res.json({
+      status: true,
+      msg: '',
+      data: {
+        total: total
       }
     })
   })

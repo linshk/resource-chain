@@ -5,6 +5,7 @@ pragma solidity ^0.4.22;
 contract ResourceManager {
     // resource detail
     struct ResourceInfo {
+        uint id;
         address owner;
         uint timestamp;
         string name;
@@ -41,7 +42,7 @@ contract ResourceManager {
         if (resources[hash].timestamp == 0) 
         {
             // validate something here
-            resources[hash] = ResourceInfo(msg.sender, block.timestamp, name, size, description, tags, agents[msg.sender]);
+            resources[hash] = ResourceInfo(resourcesCount, msg.sender, block.timestamp, name, size, description, tags, agents[msg.sender]);
             hashes[resourcesCount] = hash;
             resourcesCount = resourcesCount + 1;
             emit logResourceUpload();
@@ -52,18 +53,26 @@ contract ResourceManager {
             return false;
         }
     }
-    
-    function getResourceInfoByHash(string resourceHash) public view returns (address owner, uint timestamp, string name, uint size, string description, string tags, address agent)  
+
+    function getResourcesCount() public view returns (uint count)
     {
-        require(resources[resourceHash].timestamp != 0, "resource does not exist");
-        return (resources[resourceHash].owner, resources[resourceHash].timestamp, resources[resourceHash].name, resources[resourceHash].size, resources[resourceHash].description, resources[resourceHash].tags, resources[resourceHash].agent);
+        return resourcesCount;
     }
     
-    function getResourceInfoById(uint id) public view returns (address owner, uint timestamp, string name, uint size, string description, string tags, address agent) 
+    function getResourceInfoByHash(string hash) public view returns (uint id, uint timestamp, string name, uint size, string description, string tags, address agent)  
+    {
+        require(resources[hash].timestamp != 0, "resource does not exist");
+        id = resources[hash].id;
+        timestamp = resources[hash].timestamp;
+        return (id, timestamp, resources[hash].name, resources[hash].size, resources[hash].description, resources[hash].tags, resources[hash].agent);
+    }
+    
+    function getResourceInfoById(uint id) public view returns (string hash, address owner, uint timestamp, string name, uint size, string description, string tags, address agent) 
     {
         require(id < resourcesCount, "id out of range");
-        string storage hash = hashes[id];
-        return (resources[hash].owner, resources[hash].timestamp, resources[hash].name, resources[hash].size, resources[hash].description, resources[hash].tags, resources[hash].agent);
+        hash = hashes[id];
+        owner = resources[hash].owner;
+        return (hash, owner, resources[hash].timestamp, resources[hash].name, resources[hash].size, resources[hash].description, resources[hash].tags, resources[hash].agent);
     }
     
     

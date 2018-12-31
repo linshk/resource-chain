@@ -4,6 +4,12 @@ const Agent = require('../controller/Agent')
 
 router
 	.post('/newAgent', Agent.newAgent)
+	.get('/getDeployedAgent',Agent.getDeployedAgent)
+	.get('/getRequestsCount', Agent.getRequestsCount)
+	.get('/getResourcesCount', Agent.getResourcesCount)
+	.get('/getLastPulseTimestamp', Agent.getLastPulseTimestamp)
+	.get('/getTimeout', Agent.getTimeout)
+	.post('/setTimeout', Agent.setTimeout)
 	.post('/setUsername', Agent.setUsername)
 	.post('/setAvatar', Agent.setAvatar)
 	.post('/setMotto', Agent.setMotto)
@@ -14,9 +20,10 @@ router
 	.post('/setPrice', Agent.setPrice)
 	.post('/setAvailable', Agent.setAvailable)
 	.get('/getResourceState', Agent.getResourceState)
+	.get('/getResourceStateById', Agent.getResourceStateById)
 	.post('/requestResource', Agent.requestResource)
-  .get('/getRequest', Agent.getRequest)
-  .post('/responseResource', Agent.responseResource)
-  .post('/fetchResponse', Agent.fetchResponse);
+	.get('/getRequest', Agent.getRequest)
+	.post('/responseResource', Agent.responseResource)
+	.post('/fetchResponse', Agent.fetchResponse);
 
 module.exports = router
