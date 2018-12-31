@@ -53,7 +53,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit" style="margin-right: 30px">上传资源</el-button>
-        <el-button>重置</el-button>
+        <el-button @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
   </el-container>
@@ -103,6 +103,18 @@ export default {
     }
   },
   methods: {
+    resetForm () {
+      this.form = {
+        name: '',
+        description: '',
+        tags: [],
+        inputVisible: false,
+        inputValue: '',
+        price: 0,
+        resource: [],
+        hash: ''
+      }
+    },
     async beforeUpload (file) {
       let reader
       if (file) {
